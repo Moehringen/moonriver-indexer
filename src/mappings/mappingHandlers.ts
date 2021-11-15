@@ -4,24 +4,25 @@ import { SubstrateBlock } from '@subql/types';
 import { PointHistory } from '../types/models/PointHistory';
 
 import {
-    handleNewRoundStarted,
-    handleCollatorChosen,
-    handleNomination,
-    handleNominationIncreased,
-    handleNominationDecreased,
-    handleNominatorLeftCollator,
-    handleRewarded,
-    handelCollatorBondedMore,
-    handelCollatorBondedLess,
-    handleCollatorLeft,
-    handleJoinedCollatorCandidates,
-    handleTotalSelectedSetChange,
+  handleNewRoundStarted,
+  handleCollatorChosen,
+  handleNomination,
+  handleNominationIncreased,
+  handleNominationDecreased,
+  handleNominatorLeftCollator,
+  handleRewarded,
+  handleNominatorDueReward,
+  handelCollatorBondedMore,
+  handelCollatorBondedLess,
+  handleCollatorLeft,
+  handleJoinedCollatorCandidates,
+  handleTotalSelectedSetChange,
 } from '../handlers/parachain-handler';
 // import { Chronicle } from '../types/models/Chronicle';
 import { ChronicleKey, PointReward } from '../constants';
 
 
-const noop = async () => {};
+const noop = async () => { };
 
 const eventsMapping = {
   'parachainStaking/NewRound': handleNewRoundStarted,
@@ -30,25 +31,26 @@ const eventsMapping = {
   'parachainStaking/NominationIncreased': handleNominationIncreased,
   'parachainStaking/NominationDecreased': handleNominationDecreased,
   'parachainStaking/NominatorLeftCollator': handleNominatorLeftCollator,
-  'parachainStaking/Rewarded':handleRewarded,
-  'parachainStaking/JoinedCollatorCandidates':handleJoinedCollatorCandidates,
-  'parachainStaking/CollatorBondedMore':handelCollatorBondedMore,
-  'parachainStaking/CollatorBondedLess':handelCollatorBondedLess,
-  'parachainStaking/CollatorLeft':handleCollatorLeft,
-  'parachainStaking/TotalSelectedSet':handleTotalSelectedSetChange,
+  'parachainStaking/Rewarded': handleRewarded,
+  'parachainStaking/NominatorDueReward': handleNominatorDueReward,
+  'parachainStaking/JoinedCollatorCandidates': handleJoinedCollatorCandidates,
+  'parachainStaking/CollatorBondedMore': handelCollatorBondedMore,
+  'parachainStaking/CollatorBondedLess': handelCollatorBondedLess,
+  'parachainStaking/CollatorLeft': handleCollatorLeft,
+  'parachainStaking/TotalSelectedSet': handleTotalSelectedSetChange,
 };
 
 export async function handleBlock(block: SubstrateBlock): Promise<void> {
   let number = block.block.header.number.toNumber();
   let extrinsics = block.block.extrinsics;
-  for(let i=0;i<extrinsics.length;i++){
+  for (let i = 0; i < extrinsics.length; i++) {
     const { isSigned, meta, method: { args, method, section } } = extrinsics[i];
     // check the points award
     if (section == 'authorInherent') {
       //logger.info(`${section}.${method}(${args.map((a) => a.toString()).join(', ')})`);
       let id = number.toString();
       let pointHistory = new PointHistory(id);
-      pointHistory.roundindex = Math.floor(number/300) + 1;
+      pointHistory.roundindex = Math.floor(number / 300) + 1;
       pointHistory.block = BigInt(number);
       pointHistory.account = args[0].toString();
       pointHistory.point = PointReward.PointPerBlock;

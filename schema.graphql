@@ -55,7 +55,17 @@ type RewardHistory @entity{
   timestamp: Date
   aid:BigInt!
 }
-
+type NominatorRewardDetailHistory @entity{
+  id:ID!
+  account: String! @index
+  collator: String @index
+  issueBlock: BigInt
+  issueroundindex: Int
+  realroundindex:Int
+  balance:String
+  timestamp: Date
+  aid:BigInt!
+}
 
 type IDGenerator @entity {
     "id"
