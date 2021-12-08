@@ -1,6 +1,6 @@
 import { SubstrateBlock, SubstrateEvent } from '@subql/types';
-import { Collator, NominatorRewardDetailHistory, Round, blockPerRound } from "../types";
-import { NominationActiontype, CollatorActiontype } from '../constants';
+import { Collator, NominatorRewardDetailHistory, Round, } from "../types";
+import { NominationActiontype, CollatorActiontype, blockPerRound } from '../constants';
 import { NominatorActionHistory } from '../types/models/NominatorActionHistory';
 import { RewardHistory } from '../types/models/RewardHistory';
 import { CollatorActionHistory } from '../types/models/CollatorActionHistory';
