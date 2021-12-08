@@ -1,5 +1,5 @@
 import { SubstrateBlock, SubstrateEvent } from '@subql/types';
-import { Collator, NominatorRewardDetailHistory, Round } from "../types";
+import { Collator, NominatorRewardDetailHistory, Round, blockPerRound } from "../types";
 import { NominationActiontype, CollatorActiontype } from '../constants';
 import { NominatorActionHistory } from '../types/models/NominatorActionHistory';
 import { RewardHistory } from '../types/models/RewardHistory';
@@ -87,7 +87,7 @@ export const handleNomination = async (substrateEvent: SubstrateEvent) => {
   // logger.info(`Nomination happens: ${JSON.stringify(event)}`);
   // logger.info(`Nomination happens at:` + blockNum);
   const [nominatoraccount, balance, collatoraccount, nominatoradd] = event.data.toJSON() as [string, string, string, object];
-  let roundindex = Math.floor(blockNum.toNumber() / 300) + 1;
+  let roundindex = Math.floor(blockNum.toNumber() / blockPerRound) + 1;
   let id = collatoraccount + "-" + nominatoraccount + "-" + roundindex;
   // logger.info(`id is:` + id);
   // logger.info(`nominatoradd: ${JSON.stringify(nominatoradd)}`);
@@ -124,7 +124,7 @@ export const handleNominationIncreased = async (substrateEvent: SubstrateEvent) 
   logger.info(`Nomination Increase happens at:` + blockNum);
 
   const [nominatoraccount, collatoraccount, balance, iftop] = event.data.toJSON() as [string, string, string, boolean];
-  let roundindex = Math.floor(blockNum.toNumber() / 300) + 1;
+  let roundindex = Math.floor(blockNum.toNumber() / blockPerRound) + 1;
   let id = collatoraccount + "-" + nominatoraccount + "-" + roundindex;
 
   let nominationActionHistory = await NominatorActionHistory.get(id);
@@ -156,7 +156,7 @@ export const handleNominationDecreased = async (substrateEvent: SubstrateEvent) 
   logger.info(`Nomination Decrease happens: ${JSON.stringify(event)}`);
   logger.info(`Nomination Decrease happens at:` + blockNum);
   const [nominatoraccount, collatoraccount, balance, iftop] = event.data.toJSON() as [string, string, string, boolean];
-  let roundindex = Math.floor(blockNum.toNumber() / 300) + 1;
+  let roundindex = Math.floor(blockNum.toNumber() / blockPerRound) + 1;
   let id = collatoraccount + "-" + nominatoraccount + "-" + roundindex;
 
   let nominationActionHistory = await NominatorActionHistory.get(id);
@@ -187,7 +187,7 @@ export const handleNominatorLeftCollator = async (substrateEvent: SubstrateEvent
   logger.info(`Nominator left happens at:` + blockNum);
 
   const [nominatoraccount, collatoraccount, balance, newTotalBalance] = event.data.toJSON() as [string, string, string, string];
-  let roundindex = Math.floor(blockNum.toNumber() / 300) + 1;
+  let roundindex = Math.floor(blockNum.toNumber() / blockPerRound) + 1;
   let id = collatoraccount + "-" + nominatoraccount + "-" + roundindex;
 
   let nominationActionHistory = await NominatorActionHistory.get(id);
@@ -220,7 +220,7 @@ export const handleRewarded = async (substrateEvent: SubstrateEvent) => {
   logger.info(`Reward at:` + blockNum);
 
   const [account, balance] = event.data.toJSON() as [string, string];
-  let issueroundindex = Math.floor(blockNum.toNumber() / 300) + 1;
+  let issueroundindex = Math.floor(blockNum.toNumber() / blockPerRound) + 1;
   let realroundindex = issueroundindex - 2;
   let id = account;
 
@@ -252,7 +252,7 @@ export const handleNominatorDueReward = async (substrateEvent: SubstrateEvent) =
   logger.info(`NominatorDueReward at:` + blockNum);
 
   const [account, collator, balance] = event.data.toJSON() as [string, string, string];
-  let issueroundindex = Math.floor(blockNum.toNumber() / 300) + 1;
+  let issueroundindex = Math.floor(blockNum.toNumber() / blockPerRound) + 1;
   let realroundindex = issueroundindex - 2;
   let id = account;
 
@@ -283,7 +283,7 @@ export const handleJoinedCollatorCandidates = async (substrateEvent: SubstrateEv
   logger.info(`Join Candidate happens: ${JSON.stringify(event)}`);
   logger.info(`Join candidate happens at:` + blockNum);
   const [account, selfbond, totalbond] = event.data.toJSON() as [string, string, string];
-  let roundindex = Math.floor(blockNum.toNumber() / 300) + 1;
+  let roundindex = Math.floor(blockNum.toNumber() / blockPerRound) + 1;
   let id = account + "-" + roundindex;
 
   let collatorActionHistory = await CollatorActionHistory.get(id);
@@ -315,7 +315,7 @@ export const handelCollatorBondedMore = async (substrateEvent: SubstrateEvent) =
   logger.info(`Bond More happens: ${JSON.stringify(event)}`);
   logger.info(`Bond More happens at:` + blockNum);
   const [account, beforebond, afterbond] = event.data.toJSON() as [string, string, string];
-  let roundindex = Math.floor(blockNum.toNumber() / 300) + 1;
+  let roundindex = Math.floor(blockNum.toNumber() / blockPerRound) + 1;
   let id = account + "-" + roundindex;
 
   let collatorActionHistory = await CollatorActionHistory.get(id);
@@ -346,7 +346,7 @@ export const handelCollatorBondedLess = async (substrateEvent: SubstrateEvent) =
   logger.info(`Bond More happens: ${JSON.stringify(event)}`);
   logger.info(`Bond More happens at:` + blockNum);
   const [account, beforebond, afterbond] = event.data.toJSON() as [string, string, string];
-  let roundindex = Math.floor(blockNum.toNumber() / 300) + 1;
+  let roundindex = Math.floor(blockNum.toNumber() / blockPerRound) + 1;
   let id = account + "-" + roundindex;
 
   let collatorActionHistory = await CollatorActionHistory.get(id);
@@ -376,7 +376,7 @@ export const handleCollatorLeft = async (substrateEvent: SubstrateEvent) => {
   logger.info(`Collator happens: ${JSON.stringify(event)}`);
   logger.info(`Collator happens at:` + blockNum);
   const [account, beforebond, afterbond] = event.data.toJSON() as [string, string, string];
-  let roundindex = Math.floor(blockNum.toNumber() / 300) + 1;
+  let roundindex = Math.floor(blockNum.toNumber() / blockPerRound) + 1;
   let id = account + "-" + roundindex;
 
   let collatorActionHistory = await CollatorActionHistory.get(id);
@@ -408,7 +408,7 @@ export const handleTotalSelectedSetChange = async (substrateEvent: SubstrateEven
   logger.info(`TotalSelectedSet happens: ${JSON.stringify(event)}`);
   logger.info(`TotalSelectedSet happens at:` + blockNum);
   const [oldNumber, newNumber] = event.data.toJSON() as [number, number];
-  let roundindex = Math.floor(blockNum.toNumber() / 300) + 1;
+  let roundindex = Math.floor(blockNum.toNumber() / blockPerRound) + 1;
   let id = blockNum.toString();
 
   let collatorNumberHistory = new CollatorNumberHistory(id);

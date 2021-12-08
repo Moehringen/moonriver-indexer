@@ -16,3 +16,4 @@ export const CollatorActiontype = {
 export const PointReward= {
         "PointPerBlock":20,
     };
+export const blockPerRound = 600;    
